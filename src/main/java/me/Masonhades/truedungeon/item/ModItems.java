@@ -11,7 +11,7 @@ public class ModItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, Truedungeon.MODID);
 
-    public static final RegistryObject <Item> DUNGERON_MAP =
+    public static final RegistryObject <Item> DUNGEON_MAP =
             ITEMS.register("dungeon_map", () -> new DungeonMapItem(new Item.Properties()));
 
 

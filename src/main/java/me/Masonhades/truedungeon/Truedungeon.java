@@ -29,7 +29,7 @@ public class Truedungeon {
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(ModItems.DUNGERON_MAP);
+            event.accept(ModItems.DUNGEON_MAP);
         }
     }
     public static final ResourceKey<Level> DUNGEON_LEVEL_KEY =

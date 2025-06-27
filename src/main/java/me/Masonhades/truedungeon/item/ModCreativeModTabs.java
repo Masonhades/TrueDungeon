@@ -15,10 +15,10 @@ public class ModCreativeModTabs {
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Truedungeon.MODID);
 
     public static final RegistryObject<CreativeModeTab> TRUEDUNGEON_TAB  = CREATIVE_MODE_TABS.register("truedungeon_tab",
-            ()-> CreativeModeTab.builder().icon(()-> new ItemStack(ModItems.DUNGERON_MAP.get()))
+            ()-> CreativeModeTab.builder().icon(()-> new ItemStack(ModItems.DUNGEON_MAP.get()))
                     .title(Component.translatable("creativetab.truedungeon"))
                     .displayItems((p_270258_, p_259752_) -> {
-                        p_259752_.accept(ModItems.DUNGERON_MAP.get());
+                        p_259752_.accept(ModItems.DUNGEON_MAP.get());
 
                         p_259752_.accept(ModBlocks.ENTRANCE_DOOR.get());
                     })
