@@ -1,0 +1,9 @@
+{
+  "parent": "truedungeon:custom/entrance_door",
+  "textures": {
+    "all": "truedungeon:block/dungeonrock",
+    "particle": "truedungeon:block/dungeonrock",
+    "0": "truedungeon:block/entrance_door"
+  },
+  "render_type": "cutout"
+}

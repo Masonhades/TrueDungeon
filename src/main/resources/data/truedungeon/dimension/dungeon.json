@@ -1,0 +1,13 @@
+{
+  "type": "truedungeon:dungeon_type",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "truedungeon:void",
+      "lakes": false,
+      "features": false,
+      "layers": [],
+      "structure_overrides": []
+    }
+  }
+}

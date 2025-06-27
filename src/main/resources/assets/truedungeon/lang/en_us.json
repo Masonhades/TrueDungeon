@@ -1,0 +1,8 @@
+{
+  "item.truedungeon.dungeon_map": "Dungeon Map",
+  "creativetab.truedungeon": "True Dungeon",
+  "block.truedungeon.entrance_door": "Entrance Door",
+  "tooltip.truedungeon.dungeon_type": "Dungeon Type",
+  "tooltip.truedungeon.dungeon_level": "Level",
+  "tooltip.truedungeon.empty_map": "Unknown dungeon..."
+}

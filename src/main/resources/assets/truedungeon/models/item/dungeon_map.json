@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "truedungeon:item/dungeon_map"
+  }
+}
