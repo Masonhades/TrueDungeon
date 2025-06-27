@@ -3,13 +3,17 @@
 ## Dungeon Map (Ключ и Задание)
 
 ### NBT-структура
-- [ ] `dungeon_state`: "sealed" | "active" | "complete"
-- [ ] `dungeon_type`: например, "undead", "cave", "ice"
-- [ ] `dungeon_level`: 1–5
-- [ ] `dungeon_objective`: например, "kill_boss", "collect_artifact"
-- [ ] `dungeon_reward`: предмет и количество (NBT)
-- [ ] `dungeon_completed`: булево значение (0b или 1b)
-- [ ] `party`: список UUID игроков, приглашённых в пати
+- [x] Реализована структура NBT для предмета Dungeon Map:
+  - dungeon_type
+  - dungeon_level
+  - dungeon_objective
+  - dungeon_reward
+  - dungeon_state ("sealed", "active", "complete")
+- [x] Отображение Dungeon Map в тултипе с кастомным стилем и цветами уровня (звёзды).
+- [x] Расширенный тултип при удержании Shift.
+- [x] Добавлен тултип для party с отображением участников.
+- [x] Реализована активация карты (ПКМ по запечатанной карте делает игрока лидером, устанавливает состояние и создаёт party).
+
 
 ### Визуальные состояния предмета
 - [ ] Модели и текстуры для трёх состояний:

@@ -4,5 +4,11 @@
   "block.truedungeon.entrance_door": "Entrance Door",
   "tooltip.truedungeon.dungeon_type": "Dungeon Type",
   "tooltip.truedungeon.dungeon_level": "Level",
-  "tooltip.truedungeon.empty_map": "Unknown dungeon..."
+  "tooltip.truedungeon.empty_map": "Unknown dungeon...",
+  "tooltip.truedungeon.dungeon_objective": "Dungeon Objective",
+  "tooltip.truedungeon.dungeon_reward": "Dungeon Reward",
+  "tooltip.truedungeon.dungeon_state": "Dungeon State",
+  "tooltip.truedungeon.hold_shift": "Hold Shift For More Info!",
+  "tooltip.truedungeon.party_members": "Party Members",
+  "message.truedungeon.quest_activated": "Quest Activated"
 }
