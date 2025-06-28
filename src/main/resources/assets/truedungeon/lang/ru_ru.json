@@ -1,0 +1,6 @@
+{
+  "tooltip.truedungeon.dungeon_state": "Состояние подземелья",
+  "tooltip.truedungeon.dungeon_state.sealed": "Запечатано",
+  "tooltip.truedungeon.dungeon_state.active": "Активно",
+  "tooltip.truedungeon.dungeon_state.complete": "Завершено"
+}

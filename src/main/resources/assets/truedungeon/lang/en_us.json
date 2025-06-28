@@ -10,5 +10,19 @@
   "tooltip.truedungeon.dungeon_state": "Dungeon State",
   "tooltip.truedungeon.hold_shift": "Hold Shift For More Info!",
   "tooltip.truedungeon.party_members": "Party Members",
-  "message.truedungeon.quest_activated": "Quest Activated"
+  "message.truedungeon.quest_activated": "Quest Activated",
+  "tooltip.truedungeon.dungeon_state.sealed": "Sealed",
+  "tooltip.truedungeon.dungeon_state.active": "Active",
+  "tooltip.truedungeon.dungeon_state.complete": "Complete",
+  "party_message.truedungeon.already_in_party": "Already in party",
+  "party_message.truedungeon.invite_in_party": "Invite in party",
+  "party_message.truedungeon.accept": "Accept",
+  "party_message.truedungeon.join_the_party": "Join the party",
+  "party_message.truedungeon.decline": "Decline",
+  "party_message.truedungeon.decline_party_invite": "Decline party invite",
+  "party_message.truedungeon.party_invite": "You invited %s to the party.",
+  "party_message.truedungeon.in_party":  "in party",
+  "party_message.truedungeon.failed_to_join": "Failed to join",
+  "party_message.truedungeon.player_joined": "Player joined",
+  "tooltip.truedungeon.party_leader": "Party Leader"
 }
