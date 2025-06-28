@@ -46,16 +46,17 @@ public class PartyInviteHandler {
 
                 var party = tag.getList("party", Tag.TAG_STRING);
                 if (party.stream().anyMatch(nbt -> UUID.fromString(nbt.getAsString()).equals(targetPlayer.getUUID()))){
-                    sourcePlayer.sendSystemMessage(Component.literal(targetPlayer.getName().getString() + Component.translatable("party_message.truedungeon.already_in_party")));
+                    sourcePlayer.sendSystemMessage(Component.translatable("party_message.truedungeon.already_in_party_with_name", targetPlayer.getName()));
                     return;
                 }
 
 
                 MutableComponent msg = Component.translatable("party_message.truedungeon.invite_in_party",
                         sourcePlayer.getName(),
-                        Component.translatable("tooltip.truedungeon.dungeon_type." + tag.getString("dungeon_type")),
-                        Component.literal("[" + "уровень " + tag.getInt("dungeon_level") + "]")
-                );
+                        Component.literal(tag.getString("dungeon_type")),
+                        Component.translatable("tooltip.truedungeon.dungeon_level_name", tag.getInt("dungeon_level")),
+                        Component.translatable("tooltip.truedungeon.dungeon_reward_name", tag.getString("dungeon_reward"))
+                );;
 
 
                 MutableComponent accept = Component.translatable("party_message.truedungeon.accept").withStyle(style ->

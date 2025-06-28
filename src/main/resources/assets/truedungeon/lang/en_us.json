@@ -15,7 +15,9 @@
   "tooltip.truedungeon.dungeon_state.active": "Active",
   "tooltip.truedungeon.dungeon_state.complete": "Complete",
   "party_message.truedungeon.already_in_party": "Already in party",
-  "party_message.truedungeon.invite_in_party": "Invite in party",
+  "party_message.truedungeon.invite_in_party": "%s invites you to a %s dungeon (%s, %s)",
+  "tooltip.truedungeon.dungeon_level_name": "Level %s",
+  "tooltip.truedungeon.dungeon_reward_name": "Reward: %s",
   "party_message.truedungeon.accept": "Accept",
   "party_message.truedungeon.join_the_party": "Join the party",
   "party_message.truedungeon.decline": "Decline",
@@ -24,5 +26,7 @@
   "party_message.truedungeon.in_party":  "in party",
   "party_message.truedungeon.failed_to_join": "Failed to join",
   "party_message.truedungeon.player_joined": "Player joined",
-  "tooltip.truedungeon.party_leader": "Party Leader"
+  "tooltip.truedungeon.party_leader": "Party Leader",
+  "party_message.truedungeon.already_in_party_with_name": "%s is already in your party",
+  "party_message.truedungeon.no_party_leader": "Party no leader"
 }
