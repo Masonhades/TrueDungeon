@@ -7,6 +7,7 @@ import me.Masonhades.truedungeon.entity.custom.QuestDealerEntity;
 import me.Masonhades.truedungeon.gui.ModMenus;
 import me.Masonhades.truedungeon.item.ModCreativeModTabs;
 import me.Masonhades.truedungeon.item.ModItems;
+import me.Masonhades.truedungeon.network.NetworkHandler;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.registries.Registries;
@@ -21,11 +22,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 
 
 @Mod("truedungeon")
 public class Truedungeon {
     public static final String MODID = "truedungeon";
+    public static final Logger LOGGER = (Logger) LogManager.getLogger();
 
     public Truedungeon() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -35,6 +39,7 @@ public class Truedungeon {
         modEventBus.addListener(this::addCreative);
         ModMenus.MENUS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModEntities.register(modEventBus);
+        NetworkHandler.register(modEventBus);
     }
 
 

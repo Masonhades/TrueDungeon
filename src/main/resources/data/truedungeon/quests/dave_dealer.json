@@ -1,0 +1,8 @@
+{
+  "types": ["crypt", "desert_temple", "old_mineshaft"],
+  "levels": [1, 2],
+  "rewards": {
+    "1": ["diamond", "gold_block"],
+    "2": ["netherite", "nether_star"]
+  }
+}

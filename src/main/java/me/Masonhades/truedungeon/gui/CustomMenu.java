@@ -1,38 +1,69 @@
 package me.Masonhades.truedungeon.gui;
 
+import me.Masonhades.truedungeon.entity.custom.QuestDealerEntity;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.SlotItemHandler;
+import net.minecraft.world.level.Level;
 
 public class CustomMenu extends AbstractContainerMenu {
 
-    // Server-side constructor
-    public CustomMenu(int windowId, Inventory playerInventory) {
-        super(ModMenus.CUSTOM_MENU.get(), windowId);
+    private final Level level;
+    private final QuestDealerEntity dealer;
 
-        ItemStackHandler itemHandler = new ItemStackHandler(1);
-        this.addSlot(new SlotItemHandler(itemHandler, 0, 80, 35));
 
-        for (int row = 0; row < 3; ++row) {
-            for (int col = 0; col < 9; ++col) {
-                this.addSlot(new Slot(playerInventory, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
+    //Client
+    public CustomMenu(int id, Inventory playerInv, FriendlyByteBuf buf) {
+        this(id, playerInv, (QuestDealerEntity) playerInv.player.level().getEntity(buf.readVarInt()));
+    }
+
+    public CustomMenu(int id, Inventory playerInv, QuestDealerEntity dealer) {
+        super(ModMenus.CUSTOM_MENU.get(), id);
+        this.dealer = dealer;
+        this.level = playerInv.player.level();
+
+        SimpleContainer container = dealer.getQuestInventory();
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 9; j++) {
+                int index = i * 9 + j;
+                this.addSlot(new Slot(container, index, 8 + j * 18, 18 + i * 18) {
+                    @Override
+                    public boolean mayPlace(ItemStack stack) {
+                        return false;
+                    }
+                });
             }
         }
+        addPlayerInventory(playerInv);
+        addPlayerHotbar(playerInv);
+    }
 
-        for (int col = 0; col < 9; ++col) {
-            this.addSlot(new Slot(playerInventory, col, 8 + col * 18, 142));
+
+    private void addPlayerInventory(Inventory playerInventory) {
+        for (int i = 0; i < 3; ++i) {
+            for (int l = 0; l < 9; ++l) {
+                this.addSlot(new Slot(playerInventory, l + i * 9 + 9, 8 + l * 18, 84 + i * 18));
+            }
         }
     }
 
+    private void addPlayerHotbar(Inventory playerInventory) {
+        for (int i = 0; i < 9; ++i) {
+            this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
+        }
+    }
+
+
+
+
     @Override
     public boolean stillValid(Player player) {
-        return true;
+        return dealer.isAlive() && player.distanceToSqr(dealer) < 64.0D;
     }
 
     @Override
@@ -40,4 +71,7 @@ public class CustomMenu extends AbstractContainerMenu {
         return ItemStack.EMPTY;
     }
 
+    public QuestDealerEntity getDealer() {
+        return dealer;
+    }
 }
