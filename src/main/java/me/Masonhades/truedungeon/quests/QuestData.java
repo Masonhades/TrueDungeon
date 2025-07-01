@@ -7,7 +7,7 @@ import java.util.Map;
 public class QuestData {
     public List<String> types;
     public List<Integer> levels;
-    public Map<String, List<String>> rewards;
+    public Map<String, List<RewardGroup>> rewards;
     public List<String> objectives;
 }
 

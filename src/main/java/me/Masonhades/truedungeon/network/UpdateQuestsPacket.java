@@ -1,11 +1,9 @@
 package me.Masonhades.truedungeon.network;
 
 import me.Masonhades.truedungeon.Truedungeon;
-import me.Masonhades.truedungeon.entity.custom.QuestDealerEntity;
 import me.Masonhades.truedungeon.gui.CustomMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;

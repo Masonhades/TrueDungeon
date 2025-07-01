@@ -19,8 +19,8 @@ public class ModCreativeModTabs {
                     .title(Component.translatable("creativetab.truedungeon"))
                     .displayItems((p_270258_, output) -> {
                         output.accept(ModItems.DUNGEON_MAP.get());
-
                         output.accept(ModBlocks.ENTRANCE_DOOR.get());
+                        output.accept(ModItems.QUEST_DEALER_SPAWN_EGG.get());
                     })
                     .build());
 

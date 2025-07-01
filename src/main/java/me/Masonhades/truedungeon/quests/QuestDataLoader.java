@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class QuestDataLoader {
 
@@ -37,12 +37,39 @@ public class QuestDataLoader {
     }
 
     public static DungeonQuest generateRandomQuest(QuestData data) {
-        String type = Util.getRandom(data.types, RandomSource.create());
-        int level = Util.getRandom(data.levels, RandomSource.create());
-        List<String> rewardList = data.rewards.get(String.valueOf(level));
-        String reward = Util.getRandom(rewardList, RandomSource.create());
-        String objective = Util.getRandom(data.objectives, RandomSource.create());  // добавляем выбор цели
-        return new DungeonQuest(type, level, reward, objective);
+        RandomSource random = RandomSource.create();
+
+        String type = Util.getRandom(data.types, random);
+        int level = Util.getRandom(data.levels, random);
+        String objective = Util.getRandom(data.objectives, random);
+
+        List<RewardGroup> levelRewards = data.rewards.get(String.valueOf(level));
+        List<RewardItem> selectedRewards = selectRewards(levelRewards, random);
+
+        return new DungeonQuest(type, level, selectedRewards, objective);
+    }
+
+
+    public static List<RewardItem> selectRewards(List<RewardGroup> rewardGroups, RandomSource random){
+
+        List<RewardItem> finalRewards = new ArrayList<>();
+
+        List<RewardGroup> baseGroups = rewardGroups.stream()
+                .filter(group -> group.chance >= 1.0f)
+                .toList();
+        if (!baseGroups.isEmpty()) {
+            RewardGroup chosenGroup = baseGroups.get(random.nextInt(baseGroups.size()));
+            finalRewards.addAll(chosenGroup.items);
+        }
+        List<RewardGroup> optionalGroups = rewardGroups.stream()
+                .filter(group -> group.chance < 1.0f)
+                .toList();
+        for (RewardGroup group : optionalGroups) {
+            if (random.nextFloat() <= group.chance) {
+                finalRewards.addAll(group.items);
+            }
+        }
+        return finalRewards;
     }
 
 }

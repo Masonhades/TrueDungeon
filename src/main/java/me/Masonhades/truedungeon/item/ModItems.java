@@ -17,7 +17,7 @@ public class ModItems {
             ITEMS.register("dungeon_map", () -> new DungeonMapItem(new Item.Properties()));
 
 
-    public static final RegistryObject<Item> QUEST_DEALER_SPAWN_EGG = ITEMS.register("tiger_spawn_egg",
+    public static final RegistryObject<Item> QUEST_DEALER_SPAWN_EGG = ITEMS.register("quest_dealer_spawn_egg",
             () -> new ForgeSpawnEggItem(ModEntities.QUEST_DEALER, 0xD57E36, 0x1D0D00,
                     new Item.Properties()));
 

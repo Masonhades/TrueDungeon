@@ -28,5 +28,6 @@
   "party_message.truedungeon.player_joined": "Player joined",
   "tooltip.truedungeon.party_leader": "Party Leader",
   "party_message.truedungeon.already_in_party_with_name": "%s is already in your party",
-  "party_message.truedungeon.no_party_leader": "Party no leader"
+  "party_message.truedungeon.no_party_leader": "Party no leader",
+  "tooltip.truedungeon.dungeon_rewards": "Rewards"
 }

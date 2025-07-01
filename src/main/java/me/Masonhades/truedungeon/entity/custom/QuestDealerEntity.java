@@ -7,6 +7,7 @@ import me.Masonhades.truedungeon.item.ModItems;
 import me.Masonhades.truedungeon.quests.QuestData;
 import me.Masonhades.truedungeon.quests.QuestDataLoader;
 import me.Masonhades.truedungeon.quests.DungeonQuest;
+import me.Masonhades.truedungeon.quests.RewardItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -44,7 +45,6 @@ import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.Optional;
-import java.util.concurrent.ThreadLocalRandom;
 
 
 public class QuestDealerEntity extends PathfinderMob implements GeoEntity  {
@@ -141,6 +141,7 @@ public class QuestDealerEntity extends PathfinderMob implements GeoEntity  {
     @Override
     public void addAdditionalSaveData(CompoundTag tag){
         super.addAdditionalSaveData(tag);
+        tag.putLong("LastQuestGenerationDay", lastQuestGenerationDay);
         ListTag items = new ListTag();
         for (int i = 0; i < questInventory.getContainerSize(); i++){
             ItemStack stack = questInventory.getItem(i);
@@ -157,6 +158,9 @@ public class QuestDealerEntity extends PathfinderMob implements GeoEntity  {
     @Override
     public void readAdditionalSaveData(CompoundTag tag){
         super.readAdditionalSaveData(tag);
+        if (tag.contains("LastQuestGenerationDay")) {
+            lastQuestGenerationDay = tag.getLong("LastQuestGenerationDay");
+        }
         ListTag items = tag.getList("QuestInventory", Tag.TAG_COMPOUND);
         for (int i = 0; i < items.size(); i++){
             CompoundTag itemTag = items.getCompound(i);
@@ -198,27 +202,37 @@ public class QuestDealerEntity extends PathfinderMob implements GeoEntity  {
 
         for (int i = 0; i < 3; i++){
             DungeonQuest quest = QuestDataLoader.generateRandomQuest(data);
-            Truedungeon.LOGGER.info("Квест {}: тип={}, уровень={}, награда={}", i + 1, quest.type, quest.level, quest.reward);
+            Truedungeon.LOGGER.info("Квест {}: тип={}, уровень={}, награда={}", i + 1, quest.type, quest.level, quest.rewards);
 
 
             ItemStack map = new ItemStack(ModItems.DUNGEON_MAP.get());
             CompoundTag dungeonData = new CompoundTag();
 
+            dungeonData.putString("dungeon_type", quest.type);
+            dungeonData.putInt("dungeon_level", quest.level);
+            dungeonData.putString("dungeon_objective", quest.objective);
+            dungeonData.putString("dungeon_state", "sealed");
+
+
+            ListTag rewardsList = new ListTag();
+            for (RewardItem reward : quest.rewards) {
+                CompoundTag rewardTag = new CompoundTag();
+                rewardTag.putString("id", reward.id);
+                rewardTag.putInt("count", reward.count);
+                rewardsList.add(rewardTag);
+            }
+            dungeonData.put("dungeon_rewards", rewardsList);
+
+
             CompoundTag tag = map.getOrCreateTag();
-            tag.putString("dungeon_type", quest.type);
-            tag.putInt("dungeon_level", quest.level);
-            tag.putString("dungeon_reward", quest.reward);
-            tag.putString("dungeon_objective", quest.objective);
-            tag.putString("dungeon_state", "sealed");  // всегда sealed
-
-
             tag.put("DungeonData", dungeonData);
 
-            CompoundTag display = tag.getCompound("display");
+            CompoundTag display = new CompoundTag();
             display.putString("Name", "{\"text\":\"Dungeon Map - " + quest.type + "\"}");
             tag.put("display", display);
 
             map.setTag(tag);
+
 
 
             int slot;
