@@ -29,5 +29,6 @@
   "tooltip.truedungeon.party_leader": "Party Leader",
   "party_message.truedungeon.already_in_party_with_name": "%s is already in your party",
   "party_message.truedungeon.no_party_leader": "Party no leader",
-  "tooltip.truedungeon.dungeon_rewards": "Rewards"
+  "tooltip.truedungeon.dungeon_rewards": "Rewards",
+  "message.truedungeon.reward_received": "You received reward for quest!"
 }

@@ -3,11 +3,13 @@ package me.Masonhades.truedungeon.entity.custom;
 
 import me.Masonhades.truedungeon.Truedungeon;
 import me.Masonhades.truedungeon.gui.CustomMenu;
+import me.Masonhades.truedungeon.item.DungeonMapItem;
 import me.Masonhades.truedungeon.item.ModItems;
 import me.Masonhades.truedungeon.quests.QuestData;
 import me.Masonhades.truedungeon.quests.QuestDataLoader;
 import me.Masonhades.truedungeon.quests.DungeonQuest;
 import me.Masonhades.truedungeon.quests.RewardItem;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -15,6 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,6 +34,7 @@ import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -94,6 +98,10 @@ public class QuestDealerEntity extends PathfinderMob implements GeoEntity  {
 
     @Override
     public InteractionResult interactAt(Player player, Vec3 hitPos, InteractionHand hand) {
+        if (player.isShiftKeyDown()) {
+            return InteractionResult.PASS;
+        }
+
         if (!level().isClientSide && player instanceof ServerPlayer serverPlayer) {
             this.currentAnimation = "interact";
             this.generateQuestsIfNeeded();
@@ -107,9 +115,8 @@ public class QuestDealerEntity extends PathfinderMob implements GeoEntity  {
                 @Override
                 public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
                     return new CustomMenu(id, inventory, QuestDealerEntity.this);
-
                 }
-            }, buffer -> buffer.writeVarInt(this.getId()));
+            }, buffer -> buffer.writeVarInt(getId()));
         }
 
         return InteractionResult.sidedSuccess(level().isClientSide);
