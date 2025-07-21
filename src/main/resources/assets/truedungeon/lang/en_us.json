@@ -13,7 +13,9 @@
   "message.truedungeon.quest_activated": "Quest Activated",
   "tooltip.truedungeon.dungeon_state.sealed": "Sealed",
   "tooltip.truedungeon.dungeon_state.active": "Active",
+  "tooltip.truedungeon.dungeon_state.in_progress": "In progress",
   "tooltip.truedungeon.dungeon_state.complete": "Complete",
+  "tooltip.truedungeon.dungeon_state.failed": "Failed",
   "party_message.truedungeon.already_in_party": "Already in party",
   "party_message.truedungeon.invite_in_party": "%s invites you to a %s dungeon (%s, %s)",
   "tooltip.truedungeon.dungeon_level_name": "Level %s",
@@ -30,5 +32,16 @@
   "party_message.truedungeon.already_in_party_with_name": "%s is already in your party",
   "party_message.truedungeon.no_party_leader": "Party no leader",
   "tooltip.truedungeon.dungeon_rewards": "Rewards",
-  "message.truedungeon.reward_received": "You received reward for quest!"
+  "message.truedungeon.reward_received": "You received reward for quest!",
+  "tooltip.truedungeon.reward_bonus": "Reward Bonus",
+  "tooltip.truedungeon.valid_types": "Valid for Types:",
+  "tooltip.truedungeon.objective.find_boss": "Find the Boss",
+  "tooltip.truedungeon.objective.escape": "Escape the Dungeon",
+  "tooltip.truedungeon.objective.collect_artifact": "Collect the Artifact",
+  "tooltip.truedungeon.objective.seal_corruption": "Seal the Corruption",
+  "tooltip.truedungeon.dungeon_objective.combo": "Combo",
+  "tooltip.truedungeon.list_prefix": "- ",
+  "tooltip.truedungeon.objective.kill_boss": "Kill Boss",
+  "tooltip.truedungeon.objective.collect_artifacts": "Collect the Artifact",
+  "dungeon.objective.kill_boss": "Kill Boss"
 }

@@ -1,6 +1,24 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "truedungeon:item/dungeon_map"
-  }
+    "layer0": "truedungeon:item/dungeon_map_sealed"
+  },
+  "overrides": [
+    {
+      "predicate": { "dungeon_state": 1.0 },
+      "model": "truedungeon:item/dungeon_map_active"
+    },
+    {
+      "predicate": { "dungeon_state": 2.0 },
+      "model": "truedungeon:item/dungeon_map_in_progress"
+    },
+    {
+      "predicate": { "dungeon_state": 3.0 },
+      "model": "truedungeon:item/dungeon_map_complete"
+    },
+    {
+      "predicate": { "dungeon_state": 4.0 },
+      "model": "truedungeon:item/dungeon_map_failed"
+    }
+  ]
 }

@@ -1,0 +1,67 @@
+[
+  {
+    "structureId": "boss_room",
+    "weight": 5,
+    "maxUsages": 1,
+    "types": ["crypt", "dungeon"],
+    "levelScaling": false,
+    "routes": [
+      { "entrance": "NORTH", "exit": "SOUTH" },
+      { "entrance": "SOUTH", "exit": "NORTH" }
+    ]
+  },
+  {
+    "structureId": "crossroad_room",
+    "weight": 8,
+    "maxUsages": 6,
+    "types": ["crypt", "dungeon"],
+    "routes": [
+      { "entrance": "EAST", "exit": "SOUTH" },
+      { "entrance": "WEST", "exit": "EAST" }
+    ]
+  },
+  {
+    "structureId": "corner_room",
+    "weight": 10,
+    "maxUsages": 3,
+    "types": ["crypt", "dungeon"],
+    "routes": [
+      { "entrance": "SOUTH", "exit": "EAST"}
+
+
+    ]
+
+  },
+  {
+    "structureId": "dead_end_room",
+    "weight": 3,
+    "maxUsages": 10,
+    "types": ["crypt", "dungeon"],
+    "routes": [
+      { "entrance": "SOUTH", "exit": null }
+    ]
+  },
+  {
+    "structureId": "hallway_room",
+    "weight": 15,
+    "maxUsages": 5,
+    "types": ["crypt", "dungeon"],
+    "routes": [
+      { "entrance": "NORTH", "exit": "SOUTH" },
+      { "entrance": "SOUTH", "exit": "NORTH" },
+      { "entrance": "EAST", "exit": "WEST" },
+      { "entrance": "WEST", "exit": "EAST" }
+    ]
+  },
+  {
+    "structureId": "start_room",
+    "weight": 20,
+    "maxUsages": 1,
+    "types": ["crypt", "dungeon"],
+    "routes": [
+      { "entrance": null, "exit": "WEST" },
+      { "entrance": null, "exit": "NORTH" },
+      { "entrance": null, "exit": "EAST" }
+    ]
+  }
+]

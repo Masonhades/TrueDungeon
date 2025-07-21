@@ -2,7 +2,67 @@
   "types": ["crypt", "desert_temple", "old_mineshaft"],
   "levels": [1, 2],
   "rewards": {
-    "1": ["diamond", "gold_block"],
-    "2": ["netherite", "nether_star"]
-  }
+    "1": [
+      {
+        "chance": 1.0,
+        "items": [
+          { "id": "minecraft:diamond", "count": 2 },
+          { "id": "minecraft:gold_block", "count": 1 }
+        ]
+      },
+      {
+        "chance": 1.0,
+        "items": [
+          { "id": "minecraft:iron_ingot", "count": 5 },
+          { "id": "minecraft:blaze_rod", "count": 2 }
+        ]
+      },
+      {
+        "chance": 0.5,
+        "items": [
+          { "id": "minecraft:ender_pearl", "count": 1 }
+        ]
+      }
+    ],
+    "2": [
+      {
+        "chance": 1.0,
+        "items": [
+          { "id": "minecraft:netherite_ingot", "count": 1 },
+          { "id": "minecraft:nether_star", "count": 1 }
+        ]
+      }
+    ]
+  },
+  "objectives": [
+    {
+      "type": "kill_boss"
+    },
+    {
+      "type": "collect_artifacts",
+      "amount": 3
+    },
+    {
+      "type": "escape"
+    },
+    {
+      "type": "seal_corruption",
+      "allowedTypes": ["crypt", "desert_temple"],
+      "requiredSeals": 4
+    },
+    {
+      "type": "mine_rare_ore",
+      "allowedTypes": ["old_mineshaft"],
+      "oreType": "minecraft:emerald_ore",
+      "amount": 5
+    },
+    {
+      "type": "combo",
+      "subgoals": [
+        { "type": "kill_boss" },
+        { "type": "collect_artifacts", "amount": 2 }
+      ],
+      "rewardMultiplier": 2.0
+    }
+  ]
 }
