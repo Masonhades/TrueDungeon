@@ -3,13 +3,8 @@ package me.Masonhades.truedungeon.entity.custom;
 
 import me.Masonhades.truedungeon.Truedungeon;
 import me.Masonhades.truedungeon.gui.CustomMenu;
-import me.Masonhades.truedungeon.item.DungeonMapItem;
 import me.Masonhades.truedungeon.item.ModItems;
-import me.Masonhades.truedungeon.quests.QuestData;
-import me.Masonhades.truedungeon.quests.QuestDataLoader;
-import me.Masonhades.truedungeon.quests.DungeonQuest;
-import me.Masonhades.truedungeon.quests.RewardItem;
-import net.minecraft.ChatFormatting;
+import me.Masonhades.truedungeon.quests.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -17,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -36,6 +30,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
@@ -207,29 +202,35 @@ public class QuestDealerEntity extends PathfinderMob implements GeoEntity  {
         QuestData data = dataOpt.get();
         RandomSource random = RandomSource.create();
 
-        for (int i = 0; i < 3; i++){
+        for (int i = 0; i < 3; i++) {
             DungeonQuest quest = QuestDataLoader.generateRandomQuest(data);
             Truedungeon.LOGGER.info("Квест {}: тип={}, уровень={}, награда={}", i + 1, quest.type, quest.level, quest.rewards);
+            String objectiveJson = QuestDataLoader.GSON.toJson(quest.objective);
+            Item item = ModItems.DUNGEON_MAP.get();
+            if (item == Items.AIR) {
+                Truedungeon.LOGGER.error("❌ Карта не зарегистрирована! Пропускаем квест.");
+                continue;
+            }
 
+            ItemStack map = new ItemStack(item);
+            Truedungeon.LOGGER.info("Создана карта: {}", map);
 
-            ItemStack map = new ItemStack(ModItems.DUNGEON_MAP.get());
             CompoundTag dungeonData = new CompoundTag();
-
             dungeonData.putString("dungeon_type", quest.type);
             dungeonData.putInt("dungeon_level", quest.level);
-            dungeonData.putString("dungeon_objective", quest.objective);
+            CompoundTag objectiveTag = quest.objective.toTag();
+            dungeonData.put("dungeon_objective", objectiveTag); // <== исправлено
             dungeonData.putString("dungeon_state", "sealed");
-
 
             ListTag rewardsList = new ListTag();
             for (RewardItem reward : quest.rewards) {
+                Truedungeon.LOGGER.info(" > Reward: {}x {}", reward.count, reward.id);
                 CompoundTag rewardTag = new CompoundTag();
                 rewardTag.putString("id", reward.id);
                 rewardTag.putInt("count", reward.count);
                 rewardsList.add(rewardTag);
             }
             dungeonData.put("dungeon_rewards", rewardsList);
-
 
             CompoundTag tag = map.getOrCreateTag();
             tag.put("DungeonData", dungeonData);
@@ -240,8 +241,6 @@ public class QuestDealerEntity extends PathfinderMob implements GeoEntity  {
 
             map.setTag(tag);
 
-
-
             int slot;
             int attempts = 0;
             do {
@@ -251,8 +250,9 @@ public class QuestDealerEntity extends PathfinderMob implements GeoEntity  {
 
             if (questInventory.getItem(slot).isEmpty()) {
                 questInventory.setItem(slot, map);
+                Truedungeon.LOGGER.info("✅ Карта {} добавлена в слот {}", i + 1, slot);
             } else {
-                Truedungeon.LOGGER.warn("Не удалось найти свободный слот для карты (попыток: {})", attempts);
+                Truedungeon.LOGGER.warn("❌ Не удалось найти свободный слот для карты ({} попыток)", attempts);
             }
         }
     }

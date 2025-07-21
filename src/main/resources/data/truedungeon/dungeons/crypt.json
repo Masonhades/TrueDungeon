@@ -1,0 +1,34 @@
+{
+  "type": "crypt",
+  "level_scaling": true,
+  "rooms": {
+    "min": 5,
+    "max": 24
+  },
+  "mobs": [
+    { "id": "minecraft:skeleton", "weight": 4 },
+    { "id": "minecraft:zombie", "weight": 3 },
+    { "id": "truedungeon:crypt_spirit", "weight": 1 }
+  ],
+  "boss": {
+    "id": "truedungeon:undead_lord",
+    "health_multiplier": 2.0,
+    "loot_table": "truedungeon:boss_loot/undead_lord"
+  },
+  "loot": {
+    "chests": "truedungeon:chests/crypt",
+    "special_items": [
+      { "id": "truedungeon:necromancer_ring", "chance": 0.1 }
+    ]
+  },
+  "quest_items": {
+    "objective": "collect_artifact",
+    "items": [
+      { "id": "truedungeon:crypt_artifact", "drop_from": "boss" }
+    ]
+  },
+  "environment": {
+    "fog_color": "#2a2a2a",
+    "ambient_sound": "minecraft:ambient.cave"
+  }
+}

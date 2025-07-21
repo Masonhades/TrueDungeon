@@ -1,8 +1,8 @@
 package me.Masonhades.truedungeon.item;
 
-import me.Masonhades.truedungeon.Truedungeon;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -28,6 +28,21 @@ import java.util.UUID;
 public class DungeonMapItem extends Item {
     public DungeonMapItem(Properties properties) {
         super(properties);
+
+        ItemProperties.register(this, new ResourceLocation("dungeon_state"), (stack, level, entity, seed) -> {
+            if (!stack.hasTag()) return 0.0f;
+            CompoundTag tag = stack.getTag().getCompound("DungeonData");
+            if (!tag.contains("dungeon_state")) return 0.0f;
+
+            return switch (tag.getString("dungeon_state")){
+                case "sealed" -> 0.0f;
+                case "active" -> 1.0f;
+                case "in_progress" -> 2.0f;
+                case "complete" -> 3.0f;
+                case "failed" -> 4.0f;
+                default -> 0.0f;
+            };
+        });
     }
 
     @Override
@@ -75,9 +90,47 @@ public class DungeonMapItem extends Item {
         }
 
         // Цель подземелья
-        if (dungeonData.contains("dungeon_objective")) {
-            tooltip.add(Component.translatable("tooltip.truedungeon.dungeon_objective")
-                    .append(": ").append(Component.literal(dungeonData.getString("dungeon_objective"))));
+        if (dungeonData.contains("dungeon_objective", Tag.TAG_COMPOUND)) {
+            CompoundTag objectiveTag = dungeonData.getCompound("dungeon_objective");
+            String type = objectiveTag.getString("type");
+
+            if ("combo".equals(type)) {
+                tooltip.add(Component.translatable("tooltip.truedungeon.dungeon_objective.combo")
+                        .withStyle(ChatFormatting.AQUA));
+
+                // Обработка подзадач
+                if (objectiveTag.contains("subgoals", Tag.TAG_LIST)) {
+                    ListTag subgoals = objectiveTag.getList("subgoals", Tag.TAG_COMPOUND);
+                    for (Tag subgoalTagRaw : subgoals) {
+                        CompoundTag subgoalTag = (CompoundTag) subgoalTagRaw;
+                        String subgoalType = subgoalTag.getString("type");
+                        MutableComponent subgoalText = Component.translatable("tooltip.truedungeon.objective." + subgoalType);
+
+                        if (subgoalTag.contains("amount")) {
+                            int amount = subgoalTag.getInt("amount");
+                            subgoalText.append(" (" + amount + ")");
+                        }
+
+                        tooltip.add(Component.translatable("tooltip.truedungeon.list_prefix")
+                                .append(subgoalText));
+                    }
+                }
+
+                // Отображение модификатора наград
+                if (objectiveTag.contains("rewardMultiplier")) {
+                    float multiplier = objectiveTag.getFloat("rewardMultiplier");
+                    if (multiplier > 1.0f) {
+                        tooltip.add(Component.translatable("tooltip.truedungeon.reward_bonus")
+                                .append(": ").append(Component.literal((int)(multiplier * 100) + "%")
+                                        .withStyle(ChatFormatting.GOLD)));
+                    }
+                }
+            } else {
+                // Обработка простых задач
+                tooltip.add(Component.translatable("tooltip.truedungeon.dungeon_objective")
+                        .append(": ").append(Component.translatable("tooltip.truedungeon.objective." + type)
+                                .withStyle(ChatFormatting.AQUA)));
+            }
         }
 
         // Награды
@@ -110,7 +163,9 @@ public class DungeonMapItem extends Item {
             ChatFormatting color = switch (state) {
                 case "sealed" -> ChatFormatting.GRAY;
                 case "active" -> ChatFormatting.YELLOW;
+                case "in_progress" -> ChatFormatting.DARK_PURPLE;
                 case "complete" -> ChatFormatting.DARK_GREEN;
+                case "failed" -> ChatFormatting.DARK_RED;
                 default -> ChatFormatting.WHITE;
             };
 

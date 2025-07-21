@@ -8,6 +8,6 @@ public class QuestData {
     public List<String> types;
     public List<Integer> levels;
     public Map<String, List<RewardGroup>> rewards;
-    public List<String> objectives;
+    public List<ObjectiveData> objectives;
 }
 
