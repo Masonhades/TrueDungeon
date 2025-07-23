@@ -3,6 +3,7 @@ package me.Masonhades.truedungeon.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import me.Masonhades.truedungeon.DungeonGraphExporter;
 import me.Masonhades.truedungeon.Truedungeon;
 import me.Masonhades.truedungeon.structure.*;
 import net.minecraft.commands.CommandSourceStack;
@@ -23,6 +24,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Random;
 
@@ -78,6 +81,10 @@ public class DungeonDebugCommand {
 
                                                 DungeonGraphPlacer placer = new DungeonGraphPlacer(templateManager, level);
                                                 placer.place(builder.getRoot());
+                                                Path dotPath = Paths.get("run", "dungeon.dot");
+                                                DungeonGraphExporter.exportToDot(builder.getRoot(), dotPath);
+
+                                                context.getSource().sendSuccess(() -> Component.literal("✅ Подземелье сгенерировано! Файл: dungeon.dot"), false);
 
                                                 context.getSource().sendSuccess(() -> Component.literal("✅ Подземелье сгенерировано!"), false);
                                                 return 1;

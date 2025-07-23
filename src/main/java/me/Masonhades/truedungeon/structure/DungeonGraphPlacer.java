@@ -50,6 +50,10 @@ public class DungeonGraphPlacer {
         String structureId = node.getStructureId();
         Rotation rotation = node.getRotation();
 
+        // 🔁 Размер комнаты в чанках
+        int widthChunks = node.getWidthChunks();
+        int heightChunks = node.getHeightChunks();
+
         // ✅ Загружаем структуру
         ResourceLocation location = new ResourceLocation("truedungeon", structureId);
         StructureTemplate template = templateManager.get(location).orElse(null);
@@ -59,22 +63,29 @@ public class DungeonGraphPlacer {
             return false;
         }
 
-        // ✅ Центр чанка
+        // ✅ Центр чанка (верхний левый угол комнаты)
         BlockPos chunkOrigin = node.getWorldPos();
 
-        // ✅ Смещение при повороте (чтобы структура не вышла за чанк)
+        // ✅ Смещение при повороте
         Vec3i size = template.getSize();
         int offsetX = 0;
         int offsetZ = 0;
 
+        // 🔁 Корректируем смещение в зависимости от поворота
         switch (rotation) {
-            case CLOCKWISE_90 -> offsetX = size.getZ() - 1;
-            case CLOCKWISE_180 -> {
-                offsetX = size.getX() - 1;
-                offsetZ = size.getZ() - 1;
+            case CLOCKWISE_90 -> {
+                offsetX = (size.getZ() - 1) - 16 * (widthChunks - 1);
             }
-            case COUNTERCLOCKWISE_90 -> offsetZ = size.getX() - 1;
-            default -> {}
+            case CLOCKWISE_180 -> {
+                offsetX = (size.getX() - 1) - 16 * (widthChunks - 1);
+                offsetZ = (size.getZ() - 1) - 16 * (heightChunks - 1);
+            }
+            case COUNTERCLOCKWISE_90 -> {
+                offsetZ = (size.getX() - 1) - 16 * (heightChunks - 1);
+            }
+            default -> {
+                // Rotation.NONE — без смещения
+            }
         }
 
         BlockPos placementPos = chunkOrigin.offset(offsetX, 0, offsetZ);
@@ -86,14 +97,9 @@ public class DungeonGraphPlacer {
 
         // ✅ Размещаем структуру
         template.placeInWorld(level, placementPos, placementPos, settings, level.getRandom(), 2);
-        System.out.println("✅ Размещена структура: " + structureId + " на позиции: " + placementPos);
+        System.out.println("✅ Размещена структура: " + structureId + " на позиции: " + placementPos +
+                " (" + widthChunks + "×" + heightChunks + " чанков)");
 
         return true;
     }
 }
-
-
-
-
-
-

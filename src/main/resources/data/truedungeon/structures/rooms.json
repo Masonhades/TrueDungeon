@@ -3,65 +3,224 @@
     "structureId": "boss_room",
     "weight": 5,
     "maxUsages": 1,
+    "widthChunks": 1,
+    "heightChunks": 1,
     "types": ["crypt", "dungeon"],
     "levelScaling": false,
     "routes": [
-      { "entrance": "NORTH", "exit": "SOUTH" },
-      { "entrance": "SOUTH", "exit": "NORTH" }
+      {
+        "entrance": "NORTH",
+        "exit": "SOUTH",
+        "entranceChunkX": 0,
+        "entranceChunkZ": -1,
+        "exitChunkX": 0,
+        "exitChunkZ": 1
+      },
+      {
+        "entrance": "SOUTH",
+        "exit": "NORTH",
+        "entranceChunkX": 0,
+        "entranceChunkZ": 1,
+        "exitChunkX": 0,
+        "exitChunkZ": -1
+      }
     ]
   },
   {
     "structureId": "crossroad_room",
     "weight": 8,
     "maxUsages": 6,
+    "widthChunks": 1,
+    "heightChunks": 1,
     "types": ["crypt", "dungeon"],
     "routes": [
-      { "entrance": "EAST", "exit": "SOUTH" },
-      { "entrance": "WEST", "exit": "EAST" }
+      {
+        "entrance": "EAST",
+        "exit": "SOUTH",
+        "entranceChunkX": 1,
+        "entranceChunkZ": 0,
+        "exitChunkX": 0,
+        "exitChunkZ": 1
+      },
+      {
+        "entrance": "WEST",
+        "exit": "EAST",
+        "entranceChunkX": -1,
+        "entranceChunkZ": 0,
+        "exitChunkX": 1,
+        "exitChunkZ": 0
+      }
     ]
   },
   {
     "structureId": "corner_room",
     "weight": 10,
     "maxUsages": 3,
+    "widthChunks": 1,
+    "heightChunks": 1,
     "types": ["crypt", "dungeon"],
     "routes": [
-      { "entrance": "SOUTH", "exit": "EAST"}
-
-
+      {
+        "entrance": "SOUTH",
+        "exit": "EAST",
+        "entranceChunkX": 0,
+        "entranceChunkZ": 1,
+        "exitChunkX": 1,
+        "exitChunkZ": 0
+      }
     ]
-
   },
   {
     "structureId": "dead_end_room",
     "weight": 3,
     "maxUsages": 10,
+    "widthChunks": 1,
+    "heightChunks": 1,
     "types": ["crypt", "dungeon"],
     "routes": [
-      { "entrance": "SOUTH", "exit": null }
+      {
+        "entrance": "SOUTH",
+        "exit": null,
+        "entranceChunkX": 0,
+        "entranceChunkZ": 1,
+        "exitChunkX": 0,
+        "exitChunkZ": 0
+      }
     ]
   },
   {
     "structureId": "hallway_room",
     "weight": 15,
     "maxUsages": 5,
+    "widthChunks": 1,
+    "heightChunks": 1,
     "types": ["crypt", "dungeon"],
     "routes": [
-      { "entrance": "NORTH", "exit": "SOUTH" },
-      { "entrance": "SOUTH", "exit": "NORTH" },
-      { "entrance": "EAST", "exit": "WEST" },
-      { "entrance": "WEST", "exit": "EAST" }
+      {
+        "entrance": "NORTH",
+        "entranceChunkX": 0,
+        "entranceChunkZ": -1,
+        "exit": "SOUTH",
+        "exitChunkX": 0,
+        "exitChunkZ": 1
+      },
+      {
+        "entrance": "SOUTH",
+        "entranceChunkX": 0,
+        "entranceChunkZ": 1,
+        "exit": "NORTH",
+        "exitChunkX": 0,
+        "exitChunkZ": -1
+      },
+      {
+        "entrance": "EAST",
+        "entranceChunkX": 1,
+        "entranceChunkZ": 0,
+        "exit": "WEST",
+        "exitChunkX": -1,
+        "exitChunkZ": 0
+      },
+      {
+        "entrance": "WEST",
+        "entranceChunkX": -1,
+        "entranceChunkZ": 0,
+        "exit": "EAST",
+        "exitChunkX": 1,
+        "exitChunkZ": 0
+      }
     ]
   },
   {
     "structureId": "start_room",
     "weight": 20,
     "maxUsages": 1,
+    "widthChunks": 1,
+    "heightChunks": 1,
     "types": ["crypt", "dungeon"],
     "routes": [
-      { "entrance": null, "exit": "WEST" },
-      { "entrance": null, "exit": "NORTH" },
-      { "entrance": null, "exit": "EAST" }
+      {
+        "entrance": null,
+        "exit": "WEST",
+        "entranceChunkX": 0,
+        "entranceChunkZ": 0,
+        "exitChunkX": -1,
+        "exitChunkZ": 0
+      },
+      {
+        "entrance": null,
+        "exit": "NORTH",
+        "entranceChunkX": 0,
+        "entranceChunkZ": 0,
+        "exitChunkX": 0,
+        "exitChunkZ": -1
+      },
+      {
+        "entrance": null,
+        "exit": "EAST",
+        "entranceChunkX": 0,
+        "entranceChunkZ": 0,
+        "exitChunkX": 1,
+        "exitChunkZ": 0
+      }
+    ]
+  },
+  {
+    "structureId": "large_maze",
+    "types": ["crypt"],
+    "weight": 50,
+    "maxUsages": 1,
+    "levelScaling": false,
+    "widthChunks": 2,
+    "heightChunks": 2,
+    "routes": [
+      {
+        "entrance": "NORTH",
+        "exit": "SOUTH",
+        "entranceChunkX": 0,
+        "entranceChunkZ": -2,
+        "exitChunkX": 0,
+        "exitChunkZ": 2
+      },
+      {
+        "entrance": "NORTH",
+        "exit": "SOUTH",
+        "entranceChunkX": 1,
+        "entranceChunkZ": -2,
+        "exitChunkX": 1,
+        "exitChunkZ": 2
+      },
+      {
+        "entrance": "WEST",
+        "exit": "EAST",
+        "entranceChunkX": -2,
+        "entranceChunkZ": 0,
+        "exitChunkX": 2,
+        "exitChunkZ": 0
+      },
+      {
+        "entrance": "WEST",
+        "exit": "EAST",
+        "entranceChunkX": -2,
+        "entranceChunkZ": 1,
+        "exitChunkX": 2,
+        "exitChunkZ": 1
+      },
+      {
+        "entrance": "SOUTH",
+        "exit": "NORTH",
+        "entranceChunkX": 0,
+        "entranceChunkZ": 2,
+        "exitChunkX": 0,
+        "exitChunkZ": 2
+      },
+      {
+        "entrance": "EAST",
+        "exit": "WEST",
+        "entranceChunkX": 2,
+        "entranceChunkZ": 0,
+        "exitChunkX": 2,
+        "exitChunkZ": 0
+      }
     ]
   }
 ]

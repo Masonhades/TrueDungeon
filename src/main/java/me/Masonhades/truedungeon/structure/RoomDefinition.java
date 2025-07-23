@@ -1,5 +1,7 @@
 package me.Masonhades.truedungeon.structure;
 
+import net.minecraft.core.Direction;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -12,6 +14,9 @@ public class RoomDefinition {
     private boolean levelScaling = true;
 
     private int currentUsages;
+
+    private int widthChunks = 1;
+    private int heightChunks =1;
 
     public RoomDefinition(String id, int weight, int maxUsages, List<String> types, List<Route> routes, boolean levelScaling) {
         System.out.println("🔄 Создаем RoomDefinition: " + id);
@@ -34,7 +39,7 @@ public class RoomDefinition {
 
     public void incrementUsages() {
         if (currentUsages >= maxUsages) {
-            throw new IllegalStateException("Room has reached max usages");
+            throw new IllegalStateException("Комната " + structureId + " достигла лимита: " + maxUsages + " использований");
         }
         currentUsages++;
     }
@@ -64,6 +69,25 @@ public class RoomDefinition {
 
     public void resetUsages() {
         this.currentUsages = 0;
+    }
+
+    public int getHeightChunks() {
+        return heightChunks;
+    }
+
+    public int getWidthChunks() {
+        return widthChunks;
+    }
+
+    public void setCurrentUsages(int currentUsages) {
+        this.currentUsages = currentUsages;
+    }
+
+    public void setHeightChunks(int heightChunks) {
+        this.heightChunks = heightChunks;
+    }
+    public void setWidthChunks(int widthChunks) {
+        this.widthChunks = widthChunks;
     }
 
     @Override

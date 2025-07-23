@@ -2,6 +2,7 @@ package me.Masonhades.truedungeon.structure;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
+import net.minecraft.core.Direction;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -81,19 +82,34 @@ public class RoomDefinitionLoader {
             JsonArray routesArray = obj.getAsJsonArray("routes");
             for (JsonElement routeEl : routesArray) {
                 JsonObject routeObj = routeEl.getAsJsonObject();
+
                 Direction entrance = context.deserialize(routeObj.get("entrance"), Direction.class);
                 Direction exit = context.deserialize(routeObj.get("exit"), Direction.class);
-                routes.add(new Route(entrance, exit));
+
+                int entranceChunkX = routeObj.has("entranceChunkX") ? routeObj.get("entranceChunkX").getAsInt() : 0;
+                int entranceChunkZ = routeObj.has("entranceChunkZ") ? routeObj.get("entranceChunkZ").getAsInt() : 0;
+                int exitChunkX = routeObj.has("exitChunkX") ? routeObj.get("exitChunkX").getAsInt() : 0;
+                int exitChunkZ = routeObj.has("exitChunkZ") ? routeObj.get("exitChunkZ").getAsInt() : 0;
+
+                routes.add(new Route(entrance, exit, entranceChunkX, entranceChunkZ, exitChunkX, exitChunkZ));
             }
 
-            // levelScaling (опциональный)
-            boolean levelScaling = true; // по умолчанию
-            if (obj.has("levelScaling")) {
-                levelScaling = obj.get("levelScaling").getAsBoolean();
-            }
 
-            return new RoomDefinition(structureId, weight, maxUsages, types, routes, levelScaling);
+            // levelScaling (опционально)
+            boolean levelScaling = obj.has("levelScaling") && obj.get("levelScaling").getAsBoolean();
+
+            // widthChunks и heightChunks (опционально, по умолчанию 1)
+            int widthChunks = obj.has("widthChunks") ? obj.get("widthChunks").getAsInt() : 1;
+            int heightChunks = obj.has("heightChunks") ? obj.get("heightChunks").getAsInt() : 1;
+
+
+
+            // Создание и настройка
+            RoomDefinition room = new RoomDefinition(structureId, weight, maxUsages, types, routes, levelScaling);
+            room.setWidthChunks(widthChunks);
+            room.setHeightChunks(heightChunks);
+            return room;
         }
     }
-}
 
+}

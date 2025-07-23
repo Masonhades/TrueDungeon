@@ -1,6 +1,7 @@
 package me.Masonhades.truedungeon.structure;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
@@ -19,6 +20,8 @@ public class DungeonGraphBuilder {
     private final int baseDepth = 3;
     private int currentMaxDepth;
     private List<String> allowedTypes;
+    private final float baseBranchingProbability = 0.7f;
+    private int maxSideBranchDepth;
 
     public DungeonGraphBuilder(Random random, List<RoomDefinition> rooms, StructureTemplateManager templateManager, int dungeonLevel) {
         this.random = random;
@@ -34,19 +37,18 @@ public class DungeonGraphBuilder {
     public void generate(ChunkPos startChunk, BlockPos placementPos, int level, List<String> allowedTypes) {
         this.allowedTypes = allowedTypes;
         this.currentMaxDepth = baseDepth + level * 2;
+        this.maxSideBranchDepth = baseDepth + level;
 
-        // ⬆️ Масштабируем weight и maxUsages в зависимости от уровня
         for (RoomDefinition room : availableRooms) {
             if (room.isLevelScaling()) {
-                int scaledWeight = Math.max(1, room.getWeight() + dungeonLevel); // или другой рост
+                int scaledWeight = Math.max(1, room.getWeight() + dungeonLevel);
                 int scaledMaxUsages = Math.max(1, room.getMaxUsages() + dungeonLevel);
                 room.setWeight(scaledWeight);
                 room.setMaxUsages(scaledMaxUsages);
             }
-            room.resetUsages(); // всегда сбрасываем перед генерацией
+            room.resetUsages();
         }
 
-        // Находим стартовую комнату
         RoomDefinition startRoom = availableRooms.stream()
                 .filter(r -> "start_room".equals(r.getStructureId()))
                 .findFirst()
@@ -66,6 +68,8 @@ public class DungeonGraphBuilder {
                 startRoom.getRoutes(),
                 null
         );
+        root.setWidthChunks(startRoom.getWidthChunks());
+        root.setHeightChunks(startRoom.getHeightChunks());
 
         occupiedChunks.add(startChunk);
         System.out.println("✅ Стартовая позиция: " + worldPos);
@@ -83,17 +87,47 @@ public class DungeonGraphBuilder {
         List<Route> shuffledRoutes = new ArrayList<>(currentNode.getRoutes());
         Collections.shuffle(shuffledRoutes, random);
 
+        float currentBranchingProbability = baseBranchingProbability * (1 - depth / (float) currentMaxDepth);
+
         for (Route route : shuffledRoutes) {
+            if (random.nextFloat() > currentBranchingProbability) {
+                System.out.println("🛑 Создан тупик на маршруте " + route);
+                continue;
+            }
+
+            System.out.println("🔍 Пытаемся расшириться по маршруту: " + route + " из комнаты " + currentNode.getStructureId());
+
+            int targetChunkX = currentNode.getPosition().x + route.getExitChunkX();
+            int targetChunkZ = currentNode.getPosition().z + route.getExitChunkZ();
+            ChunkPos nextChunk = new ChunkPos(targetChunkX, targetChunkZ);
+
+            System.out.printf("📍 Целевой чанк для подключения: (%d, %d)%n", nextChunk.x, nextChunk.z);
+
+            List<RoomDefinition> candidates = findCompatibleRooms(route.getExit());
+            if (candidates.isEmpty()) {
+                System.out.println("🟡 Нет подходящих комнат для выхода: " + route.getExit());
+                continue;
+            }
+
+            List<RoomDefinition> fittingCandidates = new ArrayList<>();
+            for (RoomDefinition candidate : candidates) {
+                if (canRoomFit(nextChunk, candidate)) {
+                    fittingCandidates.add(candidate);
+                }
+            }
+
+            if (fittingCandidates.isEmpty()) {
+                System.out.println("🔴 Нет комнат, помещающихся в доступное пространство");
+                continue;
+            }
+
+            RoomDefinition selected = selectWeightedRandom(fittingCandidates, depth);
+            System.out.printf("✅ Выбрана комната: %s (размер: %dx%d)%n",
+                    selected.getStructureId(),
+                    selected.getWidthChunks(),
+                    selected.getHeightChunks());
+
             Direction exit = route.getExit();
-            if (exit == null) continue;
-
-            ChunkPos nextChunk = getNeighborChunk(currentNode.getPosition(), exit);
-            if (occupiedChunks.contains(nextChunk)) continue;
-
-            List<RoomDefinition> candidates = findCompatibleRooms(exit);
-            if (candidates.isEmpty()) continue;
-
-            RoomDefinition selected = selectWeightedRandom(candidates);
             Rotation requiredRotation = calculateRotation(exit, selected);
 
             BlockPos childWorldPos = new BlockPos(
@@ -101,6 +135,9 @@ public class DungeonGraphBuilder {
                     currentNode.getWorldPos().getY(),
                     nextChunk.getWorldPosition().getZ()
             );
+
+            System.out.printf("🎯 Размещаем %s в чанке (%d, %d) → мировая позиция: %s%n",
+                    selected.getStructureId(), nextChunk.x, nextChunk.z, childWorldPos);
 
             DungeonNode child = new DungeonNode(
                     selected.getStructureId(),
@@ -110,39 +147,64 @@ public class DungeonGraphBuilder {
                     selected.getRoutes(),
                     currentNode
             );
+            child.setWidthChunks(selected.getWidthChunks());
+            child.setHeightChunks(selected.getHeightChunks());
 
-            occupiedChunks.add(nextChunk);
+            for (int dx = 0; dx < selected.getWidthChunks(); dx++) {
+                for (int dz = 0; dz < selected.getHeightChunks(); dz++) {
+                    ChunkPos occupied = new ChunkPos(nextChunk.x + dx, nextChunk.z + dz);
+                    occupiedChunks.add(occupied);
+                    System.out.printf("🔒 Заняли чанк: (%d, %d)%n", occupied.x, occupied.z);
+                }
+            }
+
             selected.incrementUsages();
             currentNode.addChild(child);
+
+            System.out.printf("🟢 Добавлен узел: %s → %s (глубина %d)%n",
+                    currentNode.getStructureId(), selected.getStructureId(), depth + 1);
 
             buildRecursive(child, depth + 1);
         }
     }
 
-    private ChunkPos getNeighborChunk(ChunkPos current, Direction direction) {
-        int x = current.x;
-        int z = current.z;
-        return switch (direction) {
-            case NORTH -> new ChunkPos(x, z - 1);
-            case SOUTH -> new ChunkPos(x, z + 1);
-            case EAST -> new ChunkPos(x + 1, z);
-            case WEST -> new ChunkPos(x - 1, z);
-            default -> current;
-        };
+    private boolean canRoomFit(ChunkPos origin, RoomDefinition room) {
+        int width = room.getWidthChunks();
+        int height = room.getHeightChunks();
+
+        for (int dx = 0; dx < width; dx++) {
+            for (int dz = 0; dz < height; dz++) {
+                ChunkPos checkPos = new ChunkPos(origin.x + dx, origin.z + dz);
+                if (occupiedChunks.contains(checkPos)) {
+                    System.out.printf("❌ Чанк (%d, %d) занят → комната %s не помещается%n",
+                            checkPos.x, checkPos.z, room.getStructureId());
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private List<RoomDefinition> findCompatibleRooms(Direction exit) {
-        Direction requiredEntrance = exit.opposite();
-        return availableRooms.stream()
+        if (exit == null) {
+            System.out.println("🟡 Нет выхода — это dead end");
+            return Collections.emptyList();
+        }
+
+        Direction requiredEntrance = exit.getOpposite();
+        List<RoomDefinition> candidates = availableRooms.stream()
                 .filter(room -> room.getRoutes().stream()
                         .anyMatch(route -> route.getEntrance() == requiredEntrance))
                 .filter(room -> room.getMaxUsages() == -1 || room.getCurrentUsages() < room.getMaxUsages())
                 .filter(room -> room.getTypes().stream().anyMatch(allowedTypes::contains))
                 .toList();
+
+        System.out.println("🔎 Кандидаты для выхода " + exit + ": " + candidates.size());
+        return candidates;
     }
 
     private Rotation calculateRotation(Direction exit, RoomDefinition room) {
-        Direction requiredEntrance = exit.opposite();
+        Direction requiredEntrance = exit.getOpposite();
         Optional<Route> matchedRoute = room.getRoutes().stream()
                 .filter(route -> route.getEntrance() == requiredEntrance)
                 .findFirst();
@@ -154,22 +216,35 @@ public class DungeonGraphBuilder {
     }
 
     private Rotation getRotationToMatch(Direction expectedEntrance, Direction roomEntrance) {
-        for (RoomRotation rotation : RoomRotation.values()) {
-            if (roomEntrance.rotate(rotation) == expectedEntrance) {
-                return rotation.getMcRotation();
+        for (Rotation rotation : Rotation.values()) {
+            if (rotation.rotate(roomEntrance) == expectedEntrance) {
+                return rotation;
             }
         }
         return Rotation.NONE;
     }
 
-    private RoomDefinition selectWeightedRandom(List<RoomDefinition> candidates) {
-        int totalWeight = candidates.stream().mapToInt(RoomDefinition::getWeight).sum();
-        int randomValue = random.nextInt(totalWeight);
+    private RoomDefinition selectWeightedRandom(List<RoomDefinition> candidates, int depth) {
+        int totalWeight = 0;
+        List<Integer> weights = new ArrayList<>();
+
         for (RoomDefinition room : candidates) {
-            if (randomValue < room.getWeight()) return room;
-            randomValue -= room.getWeight();
+            int weight = room.getWeight();
+            if (depth > maxSideBranchDepth / 2) {
+                int sizePenalty = room.getWidthChunks() * room.getHeightChunks();
+                weight = Math.max(1, weight - sizePenalty);
+            }
+            weights.add(weight);
+            totalWeight += weight;
+        }
+
+        int randomValue = random.nextInt(totalWeight);
+        for (int i = 0; i < candidates.size(); i++) {
+            randomValue -= weights.get(i);
+            if (randomValue < 0) {
+                return candidates.get(i);
+            }
         }
         return candidates.get(0);
     }
 }
-
